@@ -20,3 +20,18 @@ def get_args():
     p.add_argument("--device",     type=str,   default=None,
                    help="cpu / cuda (default: auto-detect)")
     return p.parse_args()
+
+
+def get_dataloaders(data_dir : str, batch_size : int):
+    transform=transforms.Compose([
+        transforms.ToTensor(),
+
+    ])
+
+    train_dataset=datasets.MNIST(
+        root=data_dir,train=True,download=True,transform=transform
+    )
+
+    test_dataset=datasets.MNIST(
+        root=data_dir,train=False,download=True,transform=transform
+    )
