@@ -173,5 +173,53 @@ def jsma_attack(
 
         x_adv_flat[p1]=torch.clamp(x_adv_flat[p1]+theta,clip_min,clip_max)
         x_adv_flat[p2]=torch.clamp(x_adv_flat[p2]+theta,clip_min,clip_max)
+        x_adv=x_adv_flat.view_as(x_adv)
+
+
+
+        if x_adv_flat[p1].item() <=clip_min or x_adv_flat[p1].item()>=clip_max:
+            search_domain.discard(p1)
+
+
+        
+        if x_adv_flat[p2].item() <=clip_min or x_adv_flat[p2].item()>=clip_max:
+            search_domain.discard(p2)
+
+
+        n_iter+=1
+
+
+        with torch.no_grad():
+            current_pred=model.predict(x_adv.view(1,1,28,28)).item()
+
+
+        if verbose:
+            print(f"  [iter {n_iter:3d}] pred={current_pred}, target={target_class}")
+
+    delta = (x_adv - x).view(-1)
+    n_modified = (delta.abs() > 1e-6).sum().item()
+    distortion = n_modified / num_features
+
+    success = (current_pred == target_class)
+
+    return x_adv, {
+        "success": success,
+        "n_iter": n_iter,
+        "distortion": distortion,
+        "source_class": source_class,
+        "final_pred": current_pred,
+    }
+
+
+
+
+
+        
+
+
+
+
+
+
 
 
