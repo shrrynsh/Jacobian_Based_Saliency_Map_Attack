@@ -121,3 +121,57 @@ def jsma_attack(
 
 ) -> Tuple[torch.tensor,dict]:
 
+
+
+    if device is None:
+        device=next(model.parameters()).device
+
+    model.eval()
+    x=x.to(device)
+    x_adv=x.clone()
+
+    num_features=x.numel()//x.shape[0]
+    max_iter= int(num_features*max_distortion/2)
+
+
+    with torch.no_grad()
+    source_class=model.predict(x).item()
+
+
+    if source_class=target_class:
+        return x_adv,{
+            "success": False,
+            "n_iter": 0,
+            "distortion":0.0,
+            "source_class": source_class,
+            "note": "source_class=target_class"
+        }
+
+
+    search_domain=set(range(num_features))
+
+    n_iter=0,
+    curretn_pred=source_class
+
+    while current_pred != trget_class and n_iter<max_iter and len(search_domain)>=2:
+        x_flat=x_adv.view(1,1,28,28)
+        jacobian=compute_jacobian(model,x_flat,use_logits=True)
+
+        if increase:
+            p1,p2=saliency_map_increase(jacobian,target_class,search_domain,num_features)
+        
+        else:
+            p1,p2=saliency_map_decrease(jacobian,target_class,search_domain,num_features)
+
+
+        if p1 ==-1:
+            if verbose:
+                print(f" [inter{n_iter}] No valide pixel pair found")
+                break
+
+        x_adv_flat=x_adv.view(-1)
+
+        x_adv_flat[p1]=torch.clamp(x_adv_flat[p1]+theta,clip_min,clip_max)
+        x_adv_flat[p2]=torch.clamp(x_adv_flat[p2]+theta,clip_min,clip_max)
+
+
