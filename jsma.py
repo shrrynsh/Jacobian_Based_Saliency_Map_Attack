@@ -113,6 +113,11 @@ def jsma_attack(
     thetha : float,
     max_distortion: float = 0.145
     increase : bool=True,
-    
-)
+    clip_min : float=0.0,
+    clip_max : float : 1.0,
+
+    device : Optional[torch.device]=None,
+    verbose : bool=False,
+
+) -> Tuple[torch.tensor,dict]:
 
