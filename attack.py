@@ -255,8 +255,57 @@ def run_attack(args):
                     f"iters={stats['n_iter']}"
                     
                 )
+    pbar.close()
 
-                
+    elapsed = time.time() - start_time
+    summary = results.summary()
+
+    # Print results
+    print(f"\n{'='*60}")
+    print("ATTACK RESULTS")
+    print(f"{'='*60}")
+    print(f"Total attacks:          {summary['total_attacks']:,}")
+    print(f"Successful attacks:     {summary['n_success']:,}")
+    print(f"Success rate (τ):       {summary['success_rate_pct']:.2f}%")
+    print(f"Avg distortion (all):   {summary['avg_distortion_all_pct']:.2f}%")
+    print(f"Avg distortion (ε):     {summary['avg_distortion_success_pct']:.2f}%")
+    print(f"Time elapsed:           {elapsed:.1f}s")
+    print(f"Time per attack:        {elapsed/max(attack_count,1):.2f}s")
+    print()
+    print("Paper targets: τ=97.10%, ε=4.02%")
+    print(f"{'='*60}")
+
+    # Save results
+    results_path = os.path.join(
+        args.save_dir,
+        f"results_{args.strategy}_{args.n_samples}samples.json"
+    )
+    results.save(results_path)
+
+    # Print per-class breakdown
+    print("\nPer-class success rates (rows=source, cols=target):")
+    success_matrix, distortion_matrix = results.to_numpy_matrices()
+    np.save(os.path.join(args.save_dir, "success_matrix.npy"), success_matrix)
+    np.save(os.path.join(args.save_dir, "distortion_matrix.npy"), distortion_matrix)
+
+    # Print success matrix
+    header = "    " + "  ".join(f"{t:4d}" for t in range(10))
+    print(header)
+    for s in range(10):
+        row = f"{s:2d}  " + "  ".join(
+            f"{success_matrix[s,t]*100:3.0f}%" if s != t else "  --  "
+            for t in range(10)
+        )
+        print(row)
+
+    return results
+
+
+if __name__ == "__main__":
+    args = get_args()
+    run_attack(args)
+
+
 
 
 
