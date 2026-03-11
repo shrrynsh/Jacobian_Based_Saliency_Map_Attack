@@ -90,9 +90,9 @@ class AttackResults:
         return {
             "total_attacks": total,
             "n_success":n_success,
-            "success_rate_pct":round(success_rate,2)
-            "avg_distortion_all_pct":round(avg_distortion_pct,2)
-            "avg_distortion_success_pct":round(avg_distortion_success,2)
+            "success_rate_pct":round(success_rate,2),
+            "avg_distortion_all_pct":round(avg_distortion_pct,2),
+            "avg_distortion_success_pct":round(avg_distortion_success,2),
         }
 
 
