@@ -19,7 +19,7 @@ def get_args():
     p.add_argument("--model_path", type=str, default="./checkpoints/lenet_mnist.pth")
     p.add_argument("--data_dir", type=str, default="./data")
     p.add_argument("--save_dir", type=str, default="./results")
-    p.add_argument("--n_samples", type=int, default=100, help="Number of source samples")
+    p.add_argument("--n_samples", type=int, default=10000, help="Number of source samples")
     p.add_argument(
         "--max_distortion",
         type=float,
