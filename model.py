@@ -21,7 +21,7 @@ class LeNet5(nn.Module):
         x = self.pool1(x)
         x = F.relu(self.conv2(x))
         x = self.pool2(x)
-        return x.view(x.size(0), -1)
+        return x.view(x.size(0), -1) 
 
     def logits(self, x: torch.Tensor) -> torch.Tensor:
         x = self.features(x)
